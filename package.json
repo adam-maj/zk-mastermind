@@ -1,0 +1,32 @@
+{
+  "name": "zk-mastermind",
+  "version": "0.1.0",
+  "repository": "https://github.com/adam-maj/zk-mastermind.git",
+  "author": "adam-maj <mr.adam.maj@gmail.com>",
+  "scripts": {
+    "build:circuits": "node scripts/compile.mjs",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@chakra-ui/react": "^2.3.6",
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
+    "circomlib": "^2.0.5",
+    "framer-motion": "^7.6.2",
+    "next": "13.0.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "snarkjs": "^0.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "18.11.7",
+    "@types/react": "18.0.24",
+    "@types/react-dom": "18.0.8",
+    "eslint": "8.26.0",
+    "eslint-config-next": "13.0.0",
+    "typescript": "4.8.4"
+  }
+}
