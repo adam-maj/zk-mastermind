@@ -28,11 +28,15 @@ template Mastermind(codeSize, numColors) {
 
   // ============ PRIVATE INPUT SIGNALS ============
   signal input solution[codeSize]; // The game masters private solution
+  signal input solutionSalt; // The game masters private salt for the public solution hash
 
+  // ================ OUTPUT SIGNALS ===============
+  signal output solutionHashOut; // The hash of the game masters solution as output
+
+  // Verify that guess and solution have valid colors
   component guessColorsValid[codeSize];
   component solutionColorsValid[codeSize];
 
-  // Verify that guess and solution have valid colors
   for (var i = 0; i < codeSize; i++) {
     guessColorsValid[i] = ValidColor(numColors);
     guessColorsValid[i].color <== guess[i];
@@ -43,9 +47,19 @@ template Mastermind(codeSize, numColors) {
     solutionColorsValid[i].out === 1;
   }
 
+  // If no duplicate colors are allowed, then ensure no duplicates in the guess and solution
+
   // Verify that numPartial and numCorrect are accurate
 
   // Verify that private solution matches public solutionHash
+  component poseidon = Poseidon(numColors);
+  poseidon.inputs[0] <== solutionSalt;
+  for (var i = 0; i < codeSize; i++) {
+    poseidon.inputs[i + 1] <== solution[i];
+  }
+
+  solutionHashOut <== poseidon.hash;
+  solutionHashOut === solutionHash;
 }
 
 component main { public [guess, numPartial, numCorrect, solutionHash] } = Mastermind(4, 8);
