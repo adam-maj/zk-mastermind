@@ -5,6 +5,8 @@
   "author": "adam-maj <mr.adam.maj@gmail.com>",
   "scripts": {
     "build:circuits": "node scripts/build-circuits.mjs",
+    "build:contract": "node scripts/build-contract.mjs",
+    "deploy": "npx thirdweb@latest deploy",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -15,7 +17,9 @@
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
     "circomlib": "^2.0.5",
+    "circomlibjs": "^0.1.7",
     "framer-motion": "^7.6.2",
+    "hardhat": "^2.12.1",
     "next": "13.0.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",

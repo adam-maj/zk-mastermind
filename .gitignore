@@ -1,3 +1,7 @@
+# hardhat 
+cache
+artifacts
+
 # circom
 circuit_js/
 *.r1cs

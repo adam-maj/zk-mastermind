@@ -34,6 +34,7 @@ template Mastermind(codeSize, numColors) {
   // ================ OUTPUT SIGNALS ===============
   signal output solutionHashOut; // The hash of the game masters solution as output
 
+
   component guessColorsValid[codeSize];
   component solutionColorsValid[codeSize];
 
