@@ -23,7 +23,7 @@ for (const path of paths) {
     `cp circuit_js/circuit.wasm circuit.wasm`,
     `rm circuit_0000.zkey circuit.r1cs pot12_0000.ptau pot12_0001.ptau pot12_final.ptau`,
     `rm -rf circuit_js`,
-    `mkdir keys`,
+    `rm -rf keys && mkdir keys`,
     `mv circuit_final.zkey keys/circuit_final.zkey`,
     `mv verification_key.json keys/verification_key.json`,
     `mv circuit.wasm keys/circuit.wasm`,
