@@ -1,14 +1,21 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import fs from "fs";
 const { buildPoseidon } = require("circomlibjs");
 const snarkjs = require("snarkjs");
+const ff = require("ffjavascript");
 
 type Proof = {
-  proof: string;
-  publicSignals: string;
+  proof: Record<string, any>;
+  publicSignals: string[];
+  calldata: string[];
 };
 
-const handler = async (req: NextApiRequest, res: NextApiResponse<Proof>) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+  if (req.method !== "POST") {
+    return res.status(405).end();
+  }
+
+  const { guess } = req.body;
+
   const poseidon = await buildPoseidon();
   const F = poseidon.F;
 
@@ -17,7 +24,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Proof>) => {
   const solutionHash = F.toObject(poseidon([salt, ...solution])).toString();
 
   const inputs = {
-    guess: [0, 1, 2, 3],
+    guess: guess,
     numPartial: 0,
     numCorrect: 0,
     solutionHash: solutionHash,
@@ -31,21 +38,20 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Proof>) => {
     "./public/keys/circuit_final.zkey"
   );
 
-  const verificationKey = JSON.parse(
-    fs.readFileSync("./public/keys/verification_key.json").toString()
-  );
+  // required to generate solidity call params
+  const editedPublicSignals = ff.utils.unstringifyBigInts(publicSignals);
+  const editedProof = ff.utils.unstringifyBigInts(proof);
 
-  const isValid = await snarkjs.groth16.verify(
-    verificationKey,
-    publicSignals,
-    proof
+  // Generate solidity compatible params for Verifier.sol
+  const calldata = await snarkjs.groth16.exportSolidityCallData(
+    editedProof,
+    editedPublicSignals
   );
-
-  console.log(isValid);
 
   return res.status(200).json({
-    proof: JSON.stringify(proof),
-    publicSignals: JSON.stringify(publicSignals),
+    proof,
+    publicSignals,
+    calldata: JSON.parse(`[${calldata}]`),
   });
 };
 
