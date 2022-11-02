@@ -16,11 +16,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   const { guess } = req.body;
 
+  console.log(guess);
+
   const poseidon = await buildPoseidon();
   const F = poseidon.F;
 
   const salt = 50;
-  const solution = [4, 5, 6, 7];
+  const solution = [1, 2, 3, 4];
   const solutionHash = F.toObject(poseidon([salt, ...solution])).toString();
 
   const inputs = {
