@@ -24,7 +24,7 @@ const Game: React.FC = () => {
 
   return (
     <Stack align="center" position="relative">
-      <Flex direction="row">
+      <Flex direction={{ base: "column", lg: "row" }}>
         <Flex direction="row">
           <Flex
             direction="column"
@@ -203,81 +203,82 @@ const Game: React.FC = () => {
               </HStack>
             ))}
           </Flex>
+        </Flex>
 
-          <Flex direction="column" bg="black" border="1px solid #222">
-            <Text
-              fontSize="24px"
-              marginX="20px"
-              marginY="12px"
-              alignSelf="flex-start"
-            >
-              L O G S
-            </Text>
+        <Flex direction="column" bg="black" border="1px solid #222">
+          <Text
+            fontSize="24px"
+            marginX="20px"
+            marginY="12px"
+            alignSelf="flex-start"
+          >
+            L O G S
+          </Text>
 
-            <Stack
-              width="md"
-              border="1px solid #333"
-              bg="#111"
-              padding="10px"
-              margin="20px"
-              marginTop="0px"
-              borderRadius="xl"
-              align="flex-start"
-              overflow="scroll"
-              maxHeight="590px"
-              style={{
-                scrollbarWidth: "none",
-                msOverflowStyle: "none",
-              }}
-            >
-              {game.logs.map((log, logIndex) => (
-                <Box as={Accordion} key={logIndex} allowToggle>
-                  <AccordionItem border="none">
-                    {({ isExpanded }) => (
-                      <>
-                        <Text
-                          as={AccordionButton}
-                          padding={0}
-                          fontSize="12px"
-                          textAlign="left"
-                          wordBreak="break-word"
-                          whiteSpace="pre-line"
-                          color={logIndex % 2 === 0 ? "white" : "#666"}
-                          cursor={log.body ? "pointer" : "default"}
-                          _hover={log.body ? { opacity: 0.8 } : {}}
+          <Stack
+            width={{ base: "430px", lg: "md" }}
+            border="1px solid #333"
+            bg="#111"
+            padding="10px"
+            margin="20px"
+            marginTop="0px"
+            borderRadius="xl"
+            align="flex-start"
+            overflow="scroll"
+            maxHeight="590px"
+            height="100%"
+            style={{
+              scrollbarWidth: "none",
+              msOverflowStyle: "none",
+            }}
+          >
+            {game.logs.map((log, logIndex) => (
+              <Box as={Accordion} key={logIndex} allowToggle>
+                <AccordionItem border="none">
+                  {({ isExpanded }) => (
+                    <>
+                      <Text
+                        as={AccordionButton}
+                        padding={0}
+                        fontSize="12px"
+                        textAlign="left"
+                        wordBreak="break-word"
+                        whiteSpace="pre-line"
+                        color={logIndex % 2 === 0 ? "white" : "#666"}
+                        cursor={log.body ? "pointer" : "default"}
+                        _hover={log.body ? { opacity: 0.8 } : {}}
+                      >
+                        &gt; {log.title}{" "}
+                        {log.body &&
+                          (!isExpanded
+                            ? "(expand to view)"
+                            : "(collapse to hide)")}
+                      </Text>
+
+                      {log.body && (
+                        <Box
+                          as={AccordionPanel}
+                          bg="#222"
+                          mt="6px"
+                          padding="6px"
+                          borderRadius="6px"
                         >
-                          &gt; {log.title}{" "}
-                          {log.body &&
-                            (!isExpanded
-                              ? "(expand to view)"
-                              : "(collapse to hide)")}
-                        </Text>
-
-                        {log.body && (
-                          <Box
-                            as={AccordionPanel}
-                            bg="#222"
-                            mt="6px"
-                            padding="6px"
-                            borderRadius="6px"
+                          <Text
+                            fontSize="12px"
+                            textAlign="left"
+                            wordBreak="break-all"
+                            color={logIndex % 2 === 0 ? "white" : "#666"}
                           >
-                            <Text
-                              fontSize="12px"
-                              textAlign="left"
-                              wordBreak="break-all"
-                              color={logIndex % 2 === 0 ? "white" : "#666"}
-                            >
-                              {log.body}
-                            </Text>
-                          </Box>
-                        )}
-                      </>
-                    )}
-                  </AccordionItem>
-                </Box>
-              ))}
-            </Stack>
-          </Flex>
+                            {log.body}
+                          </Text>
+                        </Box>
+                      )}
+                    </>
+                  )}
+                </AccordionItem>
+              </Box>
+            ))}
+          </Stack>
         </Flex>
       </Flex>
     </Stack>
