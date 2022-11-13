@@ -3,32 +3,64 @@ const { buildPoseidon } = require("circomlibjs");
 const snarkjs = require("snarkjs");
 const ff = require("ffjavascript");
 
-type Proof = {
-  proof: Record<string, any>;
-  publicSignals: string[];
-  calldata: string[];
-};
+const CODES = [
+  [0, 1, 0, 2],
+  [7, 6, 1, 2],
+  [1, 1, 2, 2],
+  [1, 0, 3, 5],
+  [7, 6, 2, 2],
+  [1, 3, 3, 1],
+  [4, 2, 4, 5],
+  [0, 2, 1, 5],
+  [7, 0, 0, 3],
+  [4, 5, 6, 0],
+];
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== "POST") {
     return res.status(405).end();
   }
 
-  const { guess } = req.body;
-
-  console.log(guess);
+  const { guess, id } = req.body;
 
   const poseidon = await buildPoseidon();
   const F = poseidon.F;
 
   const salt = 50;
-  const solution = [1, 2, 3, 4];
+  const solution = CODES[id];
   const solutionHash = F.toObject(poseidon([salt, ...solution])).toString();
+
+  const partialsGuess = [0, 0, 0, 0];
+  const partialsSolution = [0, 0, 0, 0];
+
+  let numPartial = 0;
+  let numCorrect = 0;
+
+  for (let i = 0; i < guess.length; i++) {
+    for (let j = 0; j < guess.length; j++) {
+      if (guess[i] === solution[j]) {
+        if (i === j) {
+          numCorrect++;
+        } else {
+          if (
+            guess[j] !== solution[j] &&
+            guess[i] !== solution[i] &&
+            partialsSolution[j] === 0 &&
+            partialsGuess[i] == 0
+          ) {
+            numPartial++;
+            partialsGuess[i] = 1;
+            partialsSolution[j] = 1;
+          }
+        }
+      }
+    }
+  }
 
   const inputs = {
     guess: guess,
-    numPartial: 0,
-    numCorrect: 0,
+    numPartial,
+    numCorrect,
     solutionHash: solutionHash,
     solution: solution,
     solutionSalt: salt,

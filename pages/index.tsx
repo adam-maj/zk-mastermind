@@ -10,15 +10,21 @@ import {
   TabPanel,
   Tab,
   TabPanels,
+  LightMode,
 } from "@chakra-ui/react";
+import About from "../components/About";
 import Game from "../components/Game";
+import { Pattern } from "../components/Pattern";
+import Rules from "../components/Rules";
 
 export default function Mastermind() {
   return (
-    <Center py="40px" height="100vh">
-      <Container height="100%" width="md">
+    <Stack align="center" py="40px" minHeight="100vh" position="relative">
+      <Container height="100%" width="md" alignItems="space-between">
         <Stack align="center" spacing={5}>
-          <Heading size="xl">ZK Mastermind</Heading>
+          <Heading size="xl" color="white">
+            zkMastermind
+          </Heading>
 
           <Tabs
             variant="unstyled"
@@ -45,19 +51,21 @@ export default function Mastermind() {
               </Tab>
             </ButtonGroup>
             <TabPanels>
-              <TabPanel>
+              <TabPanel pt="24px">
                 <Game />
               </TabPanel>
-              <TabPanel>
-                <p>two!</p>
+              <TabPanel pt="24px">
+                <Rules />
               </TabPanel>
-              <TabPanel>
-                <p>three!</p>
+              <TabPanel pt="24px">
+                <About />
               </TabPanel>
             </TabPanels>
           </Tabs>
         </Stack>
+
+        <Pattern />
       </Container>
-    </Center>
+    </Stack>
   );
 }

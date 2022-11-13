@@ -1,44 +1,17 @@
-import { Stack, HStack, Box, Grid, GridItem, Button } from "@chakra-ui/react";
-import { useGame } from "../context/GameContext";
-
-const COLORS: Record<number, Record<string, string>> = {
-  0: {
-    body: "red.400",
-    border: "red.500",
-  },
-  1: {
-    body: "orange.400",
-    border: "orange.500",
-  },
-  2: {
-    body: "yellow.400",
-    border: "yellow.500",
-  },
-  3: {
-    body: "green.400",
-    border: "green.500",
-  },
-  4: {
-    body: "teal.400",
-    border: "teal.500",
-  },
-  5: {
-    body: "blue.400",
-    border: "blue.500",
-  },
-  6: {
-    body: "cyan.400",
-    border: "cyan.500",
-  },
-  7: {
-    body: "purple.400",
-    border: "purple.500",
-  },
-  8: {
-    body: "#523A28",
-    border: "#523A28",
-  },
-};
+import {
+  Stack,
+  HStack,
+  Box,
+  Grid,
+  GridItem,
+  Button,
+  Flex,
+  Text,
+  Icon,
+  Tooltip,
+} from "@chakra-ui/react";
+import { useGame, COLORS } from "../context/GameContext";
+import { FaCheck, FaTimes } from "react-icons/fa";
 
 const Game: React.FC = () => {
   const { game, dispatch, submit, verify } = useGame();
@@ -46,123 +19,224 @@ const Game: React.FC = () => {
   const currentRow = game.board.map((row) => row.isSubmitted).indexOf(false);
 
   return (
-    <Stack align="center" position="relative" padding="0px">
-      <Stack
-        position="absolute"
-        left="-30px"
-        mt="8px"
-        bg="#A47551"
-        width="60px"
-        borderRadius="md"
-        align="center"
-        spacing={4}
-        padding="16px"
-      >
-        {Array.from(Array(8).keys()).map((color) => (
-          <GridItem
-            key={color}
-            borderRadius="full"
-            h="40px"
-            w="40px"
-            bg={COLORS[color].body}
-            cursor="pointer"
-            _hover={{ opacity: 0.8 }}
-            border={game.color === color ? "2px solid white" : "none"}
-            onClick={() =>
-              dispatch({ type: "CHOOSE_COLOR", payload: { color } })
-            }
-          />
-        ))}
-      </Stack>
-      {game.board.map((row, rowIndex) => (
-        <HStack key={rowIndex} spacing={2} position="relative">
-          <HStack
-            bg="#A47551"
-            height="60px"
-            borderRadius="md"
-            justify="center"
-            key={rowIndex}
-            spacing={4}
-            padding="16px"
+    <Stack align="center" position="relative">
+      <Flex direction="row">
+        <Flex direction="row">
+          <Flex
+            direction="column"
+            bg="black"
+            border="1px solid #222"
+            gap="20px"
+            padding="10px"
           >
-            {row.guess.map((color, valIndex) => (
+            {Array.from(Array(8).keys()).map((color) => (
               <Box
-                key={valIndex}
+                key={color}
                 borderRadius="full"
                 h="40px"
                 w="40px"
-                border="2px solid"
-                borderColor={COLORS[color].border}
                 bg={COLORS[color].body}
-                cursor={rowIndex === currentRow ? "pointer" : undefined}
-                _hover={rowIndex === currentRow ? { opacity: 0.8 } : undefined}
-                onClick={
-                  rowIndex === currentRow
-                    ? () =>
-                        dispatch({
-                          type: "EDIT_ROW",
-                          payload: {
-                            row: rowIndex,
-                            index: valIndex,
-                            value: game.color,
-                          },
-                        })
-                    : undefined
+                cursor="pointer"
+                _hover={{ opacity: 0.8 }}
+                border={game.color === color ? "2px solid white" : "none"}
+                onClick={() =>
+                  dispatch({ type: "CHOOSE_COLOR", payload: { color } })
                 }
               />
             ))}
-          </HStack>
-          <Grid
-            bg="#A47551"
-            padding="10px"
-            gridTemplateColumns="1fr 1fr"
-            gridTemplateRows="1fr 1fr"
-            gap="8px"
-            borderRadius="md"
+          </Flex>
+
+          <Flex
+            direction="column"
+            bg="black"
+            border="1px solid #222"
+            marginX="-1px"
           >
-            {Array.from(Array(4).keys()).map((index) => (
-              <GridItem
-                key={index}
-                bg={
-                  row.correct > index
-                    ? "black"
-                    : row.correct + row.partial > index
-                    ? "white"
-                    : "#523A28"
-                }
-                w="16px"
-                h="16px"
-                borderRadius="full"
-              />
+            <Flex
+              justify="space-between"
+              marginX="20px"
+              marginY="12px"
+              align="center"
+            >
+              <Text fontSize="24px" alignSelf="flex-start">
+                G A M E
+              </Text>
+              {(game.solved || game.board[9].isSubmitted) && (
+                <Button
+                  size="sm"
+                  colorScheme="blue"
+                  onClick={() => dispatch({ type: "NEW_GAME" })}
+                >
+                  New Game
+                </Button>
+              )}
+            </Flex>
+            {game.board.map((row, rowIndex) => (
+              <HStack
+                key={rowIndex}
+                spacing={0}
+                borderY="1px solid #222"
+                marginBottom="-1px"
+              >
+                <Flex height="60px" paddingX="10px" gap="20px" align="center">
+                  <Flex width="10px">
+                    <Text color="#444">{rowIndex + 1}</Text>
+                  </Flex>
+                  {row.guess.map((color, valIndex) => (
+                    <Box
+                      key={valIndex}
+                      borderRadius="full"
+                      h="40px"
+                      w="40px"
+                      border="1px solid"
+                      borderColor={COLORS[color].border}
+                      bg={COLORS[color].body}
+                      cursor={rowIndex === currentRow ? "pointer" : undefined}
+                      _hover={
+                        rowIndex === currentRow ? { opacity: 0.8 } : undefined
+                      }
+                      onClick={
+                        rowIndex === currentRow
+                          ? () =>
+                              dispatch({
+                                type: "EDIT_ROW",
+                                payload: {
+                                  row: rowIndex,
+                                  index: valIndex,
+                                  value: game.color,
+                                },
+                              })
+                          : undefined
+                      }
+                    />
+                  ))}
+                </Flex>
+                <Flex
+                  flexGrow={1}
+                  height="60px"
+                  gap="16px"
+                  align="center"
+                  paddingX="10px"
+                  borderLeft="1px solid #222"
+                >
+                  <Grid
+                    gridTemplateColumns="1fr 1fr"
+                    gridTemplateRows="1fr 1fr"
+                    gap="8px"
+                    borderRadius="md"
+                  >
+                    {Array.from(Array(4).keys()).map((index) => (
+                      <GridItem
+                        key={index}
+                        bg={
+                          row.correct > index
+                            ? "red.400"
+                            : row.correct + row.partial > index
+                            ? "white"
+                            : "#111"
+                        }
+                        border="1px solid #333"
+                        w="16px"
+                        h="16px"
+                        borderRadius="full"
+                      />
+                    ))}
+                  </Grid>
+                  {!game.solved && currentRow === rowIndex && (
+                    <Button
+                      size="xs"
+                      width="64px"
+                      isDisabled={row.guess.includes(8)}
+                      onClick={() => submit(rowIndex)}
+                      isLoading={row.isLoading}
+                    >
+                      Check
+                    </Button>
+                  )}
+                  {row.isSubmitted && !row.isVerified && (
+                    <Button
+                      size="xs"
+                      width="64px"
+                      onClick={() => verify(rowIndex)}
+                      isLoading={row.isLoading}
+                    >
+                      Verify
+                    </Button>
+                  )}
+                  {row.isVerified && !!row.isValid && (
+                    <Flex flexGrow={1} justify="center" gap={2} minWidth="64px">
+                      <Tooltip
+                        label="The code makers proof for this row has been verified by a zkSNARK"
+                        fontSize="xs"
+                        hasArrow
+                      >
+                        <Flex>
+                          <Icon as={FaCheck} color="green.400" />
+                        </Flex>
+                      </Tooltip>
+                    </Flex>
+                  )}
+                  {row.isVerified && !row.isValid && (
+                    <Flex flexGrow={1} justify="center" gap={2} minWidth="64px">
+                      <Tooltip
+                        label="The code maker has sent an invalid proof for this row"
+                        fontSize="xs"
+                        hasArrow
+                      >
+                        <Flex>
+                          <Icon as={FaTimes} color="red.400" boxSize={5} />
+                        </Flex>
+                      </Tooltip>
+                    </Flex>
+                  )}
+                </Flex>
+              </HStack>
             ))}
-          </Grid>
-          {currentRow === rowIndex && (
-            <Button
-              position="absolute"
-              size="sm"
-              colorScheme="purple"
-              right="-80px"
-              width="73px"
-              isDisabled={row.guess.includes(8)}
-              onClick={() => submit(rowIndex)}
+          </Flex>
+
+          <Flex direction="column" bg="black" border="1px solid #222">
+            <Text
+              fontSize="24px"
+              marginX="20px"
+              marginY="12px"
+              alignSelf="flex-start"
             >
-              Submit
-            </Button>
-          )}
-          {row.isSubmitted && (
-            <Button
-              position="absolute"
-              size="sm"
-              colorScheme="blue"
-              width="73px"
-              right="-80px"
-              onClick={() => verify(rowIndex)}
+              L O G S
+            </Text>
+
+            <Stack
+              width="md"
+              border="1px solid #333"
+              bg="#111"
+              padding="10px"
+              margin="20px"
+              marginTop="0px"
+              height="100%"
+              borderRadius="xl"
+              align="flex-start"
+              overflow="scroll"
+              maxHeight="600px"
+              style={{
+                scrollbarWidth: "none",
+                msOverflowStyle: "none",
+              }}
             >
-              Verify
-            </Button>
-          )}
-        </HStack>
-      ))}
+              {game.logs.map((log, logIndex) => (
+                <Text
+                  fontSize="12px"
+                  textAlign="left"
+                  wordBreak="break-word"
+                  whiteSpace="pre-line"
+                  key={logIndex}
+                  color={logIndex % 2 === 0 ? "white" : "#666"}
+                >
+                  &gt; {log}
+                </Text>
+              ))}
+            </Stack>
+          </Flex>
+        </Flex>
+      </Flex>
     </Stack>
   );
 };

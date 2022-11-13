@@ -3,6 +3,7 @@ pragma circom 2.0.0;
 include "../../node_modules/circomlib/circuits/poseidon.circom";
 include "../../node_modules/circomlib/circuits/comparators.circom";
 include "../../node_modules/circomlib/circuits/bitify.circom";
+include "../../node_modules/circomlib/circuits/gates.circom";
 
 template ValidColor(numColors) {
   signal input color;
@@ -34,7 +35,6 @@ template Mastermind(codeSize, numColors) {
   // ================ OUTPUT SIGNALS ===============
   signal output solutionHashOut; // The hash of the game masters solution as output
 
-
   component guessColorsValid[codeSize];
   component solutionColorsValid[codeSize];
 
@@ -60,42 +60,65 @@ template Mastermind(codeSize, numColors) {
     solutionColorsValid[i] = ValidColor(numColors);
     solutionColorsValid[i].color <== solution[i];
     solutionColorsValid[i].out === 1;
-
-    // Verify that there are no duplicate colors in guess or solution
-    for (var j = i + 1; j < codeSize; j++) {
-      guessColorsEqual[equalCheckIndex] = IsEqual();
-      guessColorsEqual[equalCheckIndex].in[0] <== guess[i];
-      guessColorsEqual[equalCheckIndex].in[1] <== guess[j];
-      guessColorsEqual[equalCheckIndex].out === 0;
-
-      solutionColorsEqual[equalCheckIndex] = IsEqual();
-      solutionColorsEqual[equalCheckIndex].in[0] <== solution[i];
-      solutionColorsEqual[equalCheckIndex].in[1] <== solution[j];
-      solutionColorsEqual[equalCheckIndex].out === 0;
-
-      equalCheckIndex += 1;
-    }
   }
 
   // Count the number of partial and correct values in the guess
   var countPartial = 0;
   var countCorrect = 0;
   component partialOrCorrect[codeSize * codeSize];
+  component doesIMatch[codeSize * codeSize];
+  component doesJMatch[codeSize * codeSize];
+  component isPartial[codeSize * codeSize];
+
+  var usedForPartialGuess[codeSize * codeSize];
+  var usedForPartialSolution[codeSize * codeSize];
+  for (var i = 0; i < codeSize * codeSize; i++) {
+    usedForPartialGuess[i] = 0;
+    usedForPartialSolution[i] = 0;
+  }
 
   for (var i = 0; i < codeSize; i++) {
     for (var j = 0; j < codeSize; j++) {
+      // Check if guess[i] == solution[j]
       partialOrCorrect[i * codeSize + j] = IsEqual();
       partialOrCorrect[i * codeSize + j].in[0] <== guess[i];
       partialOrCorrect[i * codeSize + j].in[1] <== solution[j];
 
+      // Check if guess[i] == solution[i]
+      doesIMatch[i * codeSize + j] = IsEqual(); 
+      doesIMatch[i * codeSize + j].in[0] <== guess[i];
+      doesIMatch[i * codeSize + j].in[1] <== solution[i];
+
+      // Check if guess[j] == solution[j]
+      doesJMatch[i * codeSize + j] = IsEqual(); 
+      doesJMatch[i * codeSize + j].in[0] <== guess[j];
+      doesJMatch[i * codeSize + j].in[1] <== solution[j];
+
+      isPartial[i * codeSize + j] = MultiAND(i + j + 3); 
+      isPartial[i * codeSize + j].in[0] <== partialOrCorrect[i * codeSize + j].out;
+      isPartial[i * codeSize + j].in[1] <== 1 - doesIMatch[i * codeSize + j].out;
+      isPartial[i * codeSize + j].in[2] <== 1 - doesJMatch[i * codeSize + j].out;
+
+      // Check that guess[i] hasn't been used for partial yet
+      for (var k = 0; k < j; k++) {
+        isPartial[i * codeSize + j].in[k + 3] <== 1 - usedForPartialGuess[i * codeSize + k];
+      }
+
+      // Check that solution[j] hasn't been used for partial yet
+      for (var k = 0; k < i; k++) {
+        isPartial[i * codeSize + j].in[j + k + 3] <== 1 - usedForPartialSolution[k * codeSize + j];
+      }
+
       if (i == j) {
         countCorrect += partialOrCorrect[i * codeSize + j].out;
       } else {
-        countPartial += partialOrCorrect[i * codeSize + j].out;
+        countPartial += isPartial[i * codeSize + j].out;
+        usedForPartialGuess[i * codeSize + j] = isPartial[i * codeSize + j].out;
+        usedForPartialSolution[i * codeSize + j] = isPartial[i * codeSize + j].out;
       }
     }
   }
-  
+
   // Verify that numPartial and numCorrect are accurate
   component partialEqual = IsEqual();
   partialEqual.in[0] <== numPartial;
