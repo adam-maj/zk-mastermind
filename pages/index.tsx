@@ -22,13 +22,13 @@ export default function Mastermind() {
         title="zkMastermind"
         description="An on-chain code-breaker game built with zero-knowledge proofs"
         openGraph={{
-          url: "https://zkmastermind.vercel.app",
+          url: "https://zk-mastermind.vercel.app",
           title: "zkMastermind",
           description:
             "An on-chain code-breaker game built with zero-knowledge proofs",
           images: [
             {
-              url: "https://zkmastermind.vercel.app/mastermind.png",
+              url: "https://zk-mastermind.vercel.app/mastermind.png",
               width: 900,
               height: 600,
               alt: "zkMastermind",
