@@ -81,9 +81,7 @@ type GameAction =
     }
   | {
       type: "ADD_LOG";
-      payload: {
-        log: string;
-      };
+      payload: Log;
     }
   | {
       type: "SET_LOADING";
@@ -119,12 +117,17 @@ type Row = {
   proof?: ZKProof;
 };
 
+type Log = {
+  title: string;
+  body?: string;
+};
+
 type Game = {
   id: number;
   board: Row[];
   color: number;
   solved: boolean;
-  logs: string[];
+  logs: Log[];
 };
 
 type GameContextValue = {
@@ -148,7 +151,7 @@ const DEFAULT_GAME = {
   color: 0,
   solved: false,
   logs: [],
-  id: 0,
+  id: Math.random(),
 };
 const GameContext = React.createContext<GameContextValue>(
   {} as GameContextValue
@@ -159,7 +162,7 @@ export function useGame() {
 }
 
 const gameReducer = (state: Game, action: GameAction) => {
-  const updatedState = JSON.parse(JSON.stringify(state));
+  const updatedState: Game = JSON.parse(JSON.stringify(state));
   switch (action.type) {
     case "CHOOSE_COLOR":
       updatedState.color = action.payload.color;
@@ -186,14 +189,14 @@ const gameReducer = (state: Game, action: GameAction) => {
       updatedState.board[action.payload.row].isValid = action.payload.valid;
       return updatedState;
     case "ADD_LOG":
-      updatedState.logs.push(action.payload.log);
+      updatedState.logs.push(action.payload);
       return updatedState;
     case "SET_LOADING":
       updatedState.board[action.payload.row].isLoading = action.payload.loading;
       return updatedState;
     case "NEW_GAME":
       const game: Game = JSON.parse(JSON.stringify(DEFAULT_GAME));
-      game.id = Math.floor(Math.random() * 10);
+      game.id = Math.random();
       return game;
   }
 };
@@ -224,7 +227,9 @@ const GameProvider: React.FC<{ children: JSX.Element }> = ({ children }) => {
     dispatch({
       type: "ADD_LOG",
       payload: {
-        log: `Sending guess ${row} [${guessText}] to the code maker`,
+        title: `Sending guess ${
+          row + 1
+        } [${guessText}] to be checked by the code maker`,
       },
     });
 
@@ -262,11 +267,12 @@ const GameProvider: React.FC<{ children: JSX.Element }> = ({ children }) => {
     dispatch({
       type: "ADD_LOG",
       payload: {
-        log: `Received zkSNARK proof from the code maker that guess ${row} [${guessText}] has ${
+        title: `Received zkSNARK proof from the code maker that guess ${
+          row + 1
+        } has ${data.publicSignals[6]} exact and ${
           data.publicSignals[5]
-        } partial and ${data.publicSignals[6]} exact:\n\n${JSON.stringify(
-          data.proof
-        )}\n`,
+        } partial`,
+        body: `${JSON.stringify(data.proof)}`,
       },
     });
   }
@@ -280,7 +286,11 @@ const GameProvider: React.FC<{ children: JSX.Element }> = ({ children }) => {
     dispatch({
       type: "ADD_LOG",
       payload: {
-        log: `Verifying proof of guess ${row} [${guessText}] on-chain with function 'verifyProof' on smart contract ${process.env.NEXT_PUBLIC_VERIFYING_CONTRACT_ADDRESS}`,
+        title: `Verifying proof of guess ${
+          row + 1
+        } [${guessText}] on-chain with function 'verifyProof' on smart contract ${
+          process.env.NEXT_PUBLIC_VERIFYING_CONTRACT_ADDRESS
+        }`,
       },
     });
 
@@ -313,7 +323,7 @@ const GameProvider: React.FC<{ children: JSX.Element }> = ({ children }) => {
     dispatch({
       type: "ADD_LOG",
       payload: {
-        log: isValid
+        title: isValid
           ? `Proof succesfully verified by contract!`
           : `Contract rejected, proof is invalid!`,
       },

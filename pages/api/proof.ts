@@ -2,19 +2,18 @@ import type { NextApiRequest, NextApiResponse } from "next";
 const { buildPoseidon } = require("circomlibjs");
 const snarkjs = require("snarkjs");
 const ff = require("ffjavascript");
+import random from "seedrandom";
 
-const CODES = [
-  [0, 1, 0, 2],
-  [7, 6, 1, 2],
-  [1, 1, 2, 2],
-  [1, 0, 3, 5],
-  [7, 6, 2, 2],
-  [1, 3, 3, 1],
-  [4, 2, 4, 5],
-  [0, 2, 1, 5],
-  [7, 0, 0, 3],
-  [4, 5, 6, 0],
-];
+const getSolution = (seed: number) => {
+  const generator = random(seed.toString());
+  const solution = [];
+
+  for (let i = 0; i < 4; i++) {
+    solution.push(Math.floor(generator.quick() * 8));
+  }
+
+  return solution;
+};
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== "POST") {
@@ -27,7 +26,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const F = poseidon.F;
 
   const salt = 50;
-  const solution = CODES[id];
+  const solution = getSolution(id);
   const solutionHash = F.toObject(poseidon([salt, ...solution])).toString();
 
   const partialsGuess = [0, 0, 0, 0];

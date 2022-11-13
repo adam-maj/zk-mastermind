@@ -9,6 +9,10 @@ import {
   Text,
   Icon,
   Tooltip,
+  Accordion,
+  AccordionItem,
+  AccordionButton,
+  AccordionPanel,
 } from "@chakra-ui/react";
 import { useGame, COLORS } from "../context/GameContext";
 import { FaCheck, FaTimes } from "react-icons/fa";
@@ -91,12 +95,18 @@ const Game: React.FC = () => {
                       border="1px solid"
                       borderColor={COLORS[color].border}
                       bg={COLORS[color].body}
-                      cursor={rowIndex === currentRow ? "pointer" : undefined}
+                      cursor={
+                        rowIndex === currentRow && !game.solved
+                          ? "pointer"
+                          : undefined
+                      }
                       _hover={
-                        rowIndex === currentRow ? { opacity: 0.8 } : undefined
+                        rowIndex === currentRow && !game.solved
+                          ? { opacity: 0.8 }
+                          : undefined
                       }
                       onClick={
-                        rowIndex === currentRow
+                        rowIndex === currentRow && !game.solved
                           ? () =>
                               dispatch({
                                 type: "EDIT_ROW",
@@ -211,27 +221,60 @@ const Game: React.FC = () => {
               padding="10px"
               margin="20px"
               marginTop="0px"
-              height="100%"
               borderRadius="xl"
               align="flex-start"
               overflow="scroll"
-              maxHeight="600px"
+              maxHeight="590px"
               style={{
                 scrollbarWidth: "none",
                 msOverflowStyle: "none",
               }}
             >
               {game.logs.map((log, logIndex) => (
-                <Text
-                  fontSize="12px"
-                  textAlign="left"
-                  wordBreak="break-word"
-                  whiteSpace="pre-line"
-                  key={logIndex}
-                  color={logIndex % 2 === 0 ? "white" : "#666"}
-                >
-                  &gt; {log}
-                </Text>
+                <Box as={Accordion} key={logIndex} allowToggle>
+                  <AccordionItem border="none">
+                    {({ isExpanded }) => (
+                      <>
+                        <Text
+                          as={AccordionButton}
+                          padding={0}
+                          fontSize="12px"
+                          textAlign="left"
+                          wordBreak="break-word"
+                          whiteSpace="pre-line"
+                          color={logIndex % 2 === 0 ? "white" : "#666"}
+                          cursor={log.body ? "pointer" : "default"}
+                          _hover={log.body ? { opacity: 0.8 } : {}}
+                        >
+                          &gt; {log.title}{" "}
+                          {log.body &&
+                            (!isExpanded
+                              ? "(expand to view)"
+                              : "(collapse to hide)")}
+                        </Text>
+
+                        {log.body && (
+                          <Box
+                            as={AccordionPanel}
+                            bg="#222"
+                            mt="6px"
+                            padding="6px"
+                            borderRadius="6px"
+                          >
+                            <Text
+                              fontSize="12px"
+                              textAlign="left"
+                              wordBreak="break-all"
+                              color={logIndex % 2 === 0 ? "white" : "#666"}
+                            >
+                              {log.body}
+                            </Text>
+                          </Box>
+                        )}
+                      </>
+                    )}
+                  </AccordionItem>
+                </Box>
               ))}
             </Stack>
           </Flex>

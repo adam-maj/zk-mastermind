@@ -1,6 +1,5 @@
 import {
   Button,
-  Center,
   Container,
   Stack,
   Heading,
@@ -10,17 +9,15 @@ import {
   TabPanel,
   Tab,
   TabPanels,
-  LightMode,
 } from "@chakra-ui/react";
 import About from "../components/About";
 import Game from "../components/Game";
-import { Pattern } from "../components/Pattern";
 import Rules from "../components/Rules";
 
 export default function Mastermind() {
   return (
     <Stack align="center" py="40px" minHeight="100vh" position="relative">
-      <Container height="100%" width="md" alignItems="space-between">
+      <Container height="100%" alignItems="space-between">
         <Stack align="center" spacing={5}>
           <Heading size="xl" color="white">
             zkMastermind
@@ -63,8 +60,6 @@ export default function Mastermind() {
             </TabPanels>
           </Tabs>
         </Stack>
-
-        <Pattern />
       </Container>
     </Stack>
   );
