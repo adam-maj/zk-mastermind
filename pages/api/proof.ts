@@ -3,6 +3,16 @@ const { buildPoseidon } = require("circomlibjs");
 const snarkjs = require("snarkjs");
 const ff = require("ffjavascript");
 import random from "seedrandom";
+import path from "path";
+import fs from "fs";
+
+// Read files so Vercel bundles them with the serverless function
+fs.readFileSync(
+  path.join(process.cwd(), "circuits/mastermind/keys/circuit.wasm")
+);
+fs.readFileSync(
+  path.join(process.cwd(), "circuits/mastermind/keys/circuit_final.zkey")
+);
 
 const getSolution = (seed: number) => {
   const generator = random(seed.toString());
@@ -67,8 +77,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   const { proof, publicSignals } = await snarkjs.groth16.fullProve(
     inputs,
-    "./public/keys/circuit.wasm",
-    "./public/keys/circuit_final.zkey"
+    "circuits/mastermind/keys/circuit.wasm",
+    "circuits/mastermind/keys/circuit_final.zkey"
   );
 
   // required to generate solidity call params
