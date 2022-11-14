@@ -15,7 +15,8 @@ import {
   AccordionPanel,
 } from "@chakra-ui/react";
 import { useGame, COLORS } from "../context/GameContext";
-import { FaCheck, FaTimes } from "react-icons/fa";
+import { FaTimes } from "react-icons/fa";
+import { BsShieldCheck } from "react-icons/bs";
 
 const Game: React.FC = () => {
   const { game, dispatch, submit, verify } = useGame();
@@ -181,7 +182,7 @@ const Game: React.FC = () => {
                         hasArrow
                       >
                         <Flex>
-                          <Icon as={FaCheck} color="green.400" />
+                          <Icon as={BsShieldCheck} color="#666" boxSize={6} />
                         </Flex>
                       </Tooltip>
                     </Flex>
@@ -244,15 +245,13 @@ const Game: React.FC = () => {
                         textAlign="left"
                         wordBreak="break-word"
                         whiteSpace="pre-line"
-                        color={logIndex % 2 === 0 ? "white" : "#666"}
+                        color={logIndex % 2 === 0 ? "white" : "#888"}
                         cursor={log.body ? "pointer" : "default"}
                         _hover={log.body ? { opacity: 0.8 } : {}}
                       >
                         &gt; {log.title}{" "}
                         {log.body &&
-                          (!isExpanded
-                            ? "(expand to view)"
-                            : "(collapse to hide)")}
+                          (!isExpanded ? "(click to view)" : "(click to hide)")}
                       </Text>
 
                       {log.body && (
@@ -267,7 +266,7 @@ const Game: React.FC = () => {
                             fontSize="12px"
                             textAlign="left"
                             wordBreak="break-all"
-                            color={logIndex % 2 === 0 ? "white" : "#666"}
+                            color={logIndex % 2 === 0 ? "white" : "#888"}
                           >
                             {log.body}
                           </Text>

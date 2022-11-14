@@ -24,9 +24,9 @@ export const COLORS: Record<number, Record<string, string>> = {
     border: "green.500",
   },
   4: {
-    name: "teal",
-    body: "teal.400",
-    border: "teal.500",
+    name: "cyan",
+    body: "cyan.400",
+    border: "cyan.500",
   },
   5: {
     name: "blue",
@@ -34,14 +34,14 @@ export const COLORS: Record<number, Record<string, string>> = {
     border: "blue.500",
   },
   6: {
-    name: "cyan",
-    body: "cyan.400",
-    border: "cyan.500",
-  },
-  7: {
     name: "purple",
     body: "purple.400",
     border: "purple.500",
+  },
+  7: {
+    name: "pink",
+    body: "pink.400",
+    border: "pink.500",
   },
   8: {
     name: "empty",

@@ -4,10 +4,8 @@ const Rules: React.FC = () => {
   return (
     <Stack align="center">
       <Text>
-        <strong>Mastermind is a game of breaking codes.</strong>
-        <br />
-        <br />
-        It involves two parties: the code maker and the code breaker.
+        <strong>Mastermind is a game of breaking codes.</strong> It involves two
+        parties: the code maker and the code breaker.
         <br />
         <br />
         Every game, the computer (the code maker) comes up with a random code.
@@ -42,6 +40,9 @@ const Rules: React.FC = () => {
         <br />
         <br />
         <Image src="/rules.png" alt="Example" />
+        <br />
+        Note that the pegs in the code breaker&apos;s response aren&apos;t in
+        any particular order corresponding with the guess.
         <br />
         <br />
         Using only this information, you have to break the code.
