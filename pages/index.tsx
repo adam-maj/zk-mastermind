@@ -29,7 +29,7 @@ export default function Mastermind() {
           images: [
             {
               url: "https://zk-mastermind.vercel.app/mastermind.png",
-              width: 900,
+              width: 800,
               height: 600,
               alt: "zkMastermind",
               type: "image/png",
