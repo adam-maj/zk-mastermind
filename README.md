@@ -1,5 +1,7 @@
 # zk-mastermind
 
+![zkMastermind](/public/mastermind.png)
+
 zk-mastermind is an implementation of the popular Mastermind game using zero-knowledge proofs for verification.
 
 [The live version of the game can be found here](https://zk-mastermind.vercel.app/) 🧠
@@ -24,8 +26,6 @@ Each time you make a guess, you can check it and the code breaker will tell you 
 2. How many of the pegs in your guess are the correct color but in the wrong position?
 
 Using only this information, you have to break the code.
-
-![zkMastermind](/public/mastermind.png)
 
 ## Why zero-knowledge proofs?
 
