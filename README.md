@@ -25,6 +25,8 @@ Each time you make a guess, you can check it and the code breaker will tell you 
 
 Using only this information, you have to break the code.
 
+![zkMastermind](/public/mastermind.png)
+
 ## Why zero-knowledge proofs?
 
 You may be wondering how zero-knowledge proofs fit into all this.
