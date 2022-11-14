@@ -12,7 +12,7 @@ This game was built using:
 - [Next](https://nextjs.org/) for the frontend application and API.
 - [Chakra](https://chakra-ui.com/) for the frontend UI components and styling.
 
-### Rules of the game
+## Rules of the game
 
 **Mastermind is a game of breaking codes.** It involves two parties: the code maker and the code breaker.
 
@@ -25,7 +25,7 @@ Each time you make a guess, you can check it and the code breaker will tell you 
 
 Using only this information, you have to break the code.
 
-### Why zero-knowledge proofs?
+## Why zero-knowledge proofs?
 
 You may be wondering how zero-knowledge proofs fit into all this.
 
@@ -58,7 +58,7 @@ This comamnd will run through a number of steps necessary to securely compile an
 
 Once you build the circuits, you can generate and deploy a new verifier smart contract with the `yarn build:contract` and `yarn deploy` commands.
 
-### Key files and logic
+## Core components of the project
 
 The core logic and interesting files in this project are:
 
