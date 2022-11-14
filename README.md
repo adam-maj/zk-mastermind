@@ -1,7 +1,5 @@
 # zk-mastermind
 
-![zkMastermind](/public/mastermind.png)
-
 zk-mastermind is an implementation of the popular Mastermind game using zero-knowledge proofs for verification.
 
 [The live version of the game can be found here](https://zk-mastermind.vercel.app/) 🧠
@@ -13,6 +11,8 @@ This game was built using:
 - [thirdweb](https://thirdweb.com) to deploy the verifier smart contract
 - [Next](https://nextjs.org/) for the frontend application and API.
 - [Chakra](https://chakra-ui.com/) for the frontend UI components and styling.
+
+![zkMastermind](/public/mastermind.png)
 
 ## Rules of the game
 
